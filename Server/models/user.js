@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema(
         },
         shortBio: {
             type: String,
-            maxLength: 50,
+            maxLength: 150,
             default: "Hey! I'm on the Project-A!!",
         },
         fullBio: {
@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema(
         },
         interests: {
             type: [String],
-            default: ["myself"],
+            default: ["myself", "atharv", "myself", "atharv"],
         }
     },
     {

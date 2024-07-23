@@ -106,16 +106,26 @@ export const logout = async(req, res) => {
   }
 }
 
-export const changeBio = async(req, res) => {
+export const updateProfile = async(req, res) => {
   try {
-    const {username, email, newBio} = req.body;
-    let user = await User.findOne({username: username});
+    const {_id, username, email, password, shortBio, fullBio, interests} = req.body;
+    let user = await User.findOne({_id: _id});
 
     if (!user) return res.status(400).json({ error: "User not found" });
 
+    let hashedPassword = "";
+
+    if(password) hashedPassword = await bcrypt.hash(password, 10);
+
+
     user.email = email || user.email;
     user.username = username || user.username;
-    user.shortBio = newBio;
+    user.shortBio = shortBio || user.shortBio;
+    user.fullBio = fullBio || user.fullBio;
+    user.interests = interests || user.interests;
+    if(password){
+      user.password = hashedPassword
+    }
 
     user.save();
 
@@ -126,7 +136,7 @@ export const changeBio = async(req, res) => {
 
   } catch (error) {
     console.log(error);
-    console.log("error while changing bio")
+    console.log("error while updating info")
   }
 }
 
@@ -146,4 +156,18 @@ export const fetchRandomId = async(req, res) => {
   }
 
   res.json(user[0]);
+}
+
+export const getProfile = async (req, res) => {
+  const { username } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found"
+    });
+  }
+
+  return res.json(user);
 }

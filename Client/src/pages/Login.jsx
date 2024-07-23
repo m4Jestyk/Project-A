@@ -21,6 +21,8 @@ import { useCookies } from "react-cookie";
 import { User } from "../../../Server/models/user";
 import { Spinner } from '@chakra-ui/react'
 import Header from "../components/Header";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/slices/userSlice";
 
 
 const Blur = (props) => {
@@ -53,6 +55,7 @@ export default function Login() {
     password: "",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   console.log(cookies.cookiemonster);
 
@@ -69,7 +72,6 @@ export default function Login() {
 }, [cookies, navigate])
 
   const handleFormChange = async() => {
-    console.log(inputs);
     setLoading(true);
     try {
         const res = await fetch("/api/v1/users/login", {
@@ -85,6 +87,19 @@ export default function Login() {
 
         if(data.success === true)
           {
+
+            localStorage.setItem('user', JSON.stringify({
+              id: data._id,
+              email: data.email,
+              username: data.username,
+            }));
+
+            
+            dispatch(setUser({
+              id: data._id,
+              email: data.email,
+              username: data.username,
+            }));    
             navigate("/");
             window.location.reload();
           }
