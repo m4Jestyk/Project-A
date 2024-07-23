@@ -13,6 +13,7 @@ import Signup from "./pages/SignUp.jsx";
 import { store } from './store/store.js'
 import { Provider } from 'react-redux'
 import Finder from "./pages/Finder.jsx";
+import ProfileUpdate from "./pages/ProfileUpdate.jsx";
 
 
 const styles = {
@@ -57,6 +58,11 @@ const router = createBrowserRouter([
     path: "/finder",
     exact: true,
     element: <Finder/>,
+  },
+  {
+    path: "/updateprofile",
+    exact: true,
+    element: <ProfileUpdate/>
   }
 ]);
 
@@ -66,9 +72,9 @@ ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      {/* <Provider store={store}> */}
+      <Provider store={store}>
         <RouterProvider router={router} />
-        {/* </Provider>     */}
+        </Provider>    
       </ChakraProvider>
   </React.StrictMode>
 );

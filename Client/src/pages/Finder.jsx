@@ -77,7 +77,7 @@ const Finder = () => {
 
   return (
     <div>
-      <Container maxW={"90vw"} p={{ base: 4, md: 8 }}>
+      <Container maxW={"90vw"}>
         <Header />
         <Stack
           as={Box}
