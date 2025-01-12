@@ -15,7 +15,7 @@ import PacmanLoader from "react-spinners/PacmanLoader";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 
 const Finder = () => {
   const [loading, setLoading] = useState(false);
@@ -27,18 +27,16 @@ const Finder = () => {
 
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    const verifyCookie = async() => {
-        if(!cookies.cookiemonster){
-            navigate("/login");
-        }
-        else{
-          navigate("/finder");
-        }
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.cookiemonster) {
+        navigate("/login");
+      } else {
+        navigate("/finder");
+      }
     };
     verifyCookie();
-}, [cookies, navigate])
-
+  }, [cookies, navigate]);
 
   const getRandomUser = async () => {
     setLoading(true);
@@ -49,7 +47,7 @@ const Finder = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       const userData = await res.json();
       setFoundUser(userData); // Store the found user in state
       console.log(foundUser);
@@ -58,7 +56,6 @@ const Finder = () => {
     } finally {
       setLoading(false);
     }
-    
   };
 
   const handleStartBtn = async () => {
@@ -72,7 +69,33 @@ const Finder = () => {
     await getRandomUser();
     setKey((prevKey) => prevKey + 1); // Update key to restart timer
     setIsPlaying(true);
-    console.log("reset");
+    // console.log("reset");
+  };
+
+  const handleConnectBtn = async () => {
+    setLoading(true);
+    if (foundUser && foundUser.username) {
+      try {
+        const userToAdd = foundUser._id;
+        console.log(userToAdd);
+        const res = await axios.post("/api/v1/users/addfriend", {
+          userToAdd: userToAdd
+        }, {
+          withCredentials: true
+        });
+
+        if (res.data) {
+          console.log("Friend reuest sent:", res.data);
+          setFinding(false);
+          setIsPlaying(false);
+          setKey((prevKey) => prevKey + 1);
+        }
+      } catch (error) {
+        console.error("Error adding friend:", error);
+      } finally{
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -88,10 +111,7 @@ const Finder = () => {
           width={"100%"}
         >
           {!finding ? (
-            <Flex
-              width={"70%"}
-              justifyContent={"center"}
-            >
+            <Flex width={"70%"} justifyContent={"center"}>
               <Button
                 borderRadius={400}
                 fontSize={"2xl"}
@@ -147,6 +167,34 @@ const Finder = () => {
                             </Text>
                           ))}
                         </Flex>
+
+                        <Flex
+                          align="center"
+                          p={4}
+                          borderRadius="md"
+                          boxShadow="md"
+                        >
+                          <Text
+                            fontSize="lg"
+                            fontWeight="bold"
+                            color="white"
+                            mr={4}
+                          >
+                            Find them interesting?
+                          </Text>
+                          <Button
+                            colorScheme="teal"
+                            variant="solid"
+                            _hover={{ bg: "teal.600" }}
+                            _active={{
+                              bg: "teal.700",
+                              transform: "scale(0.98)",
+                            }}
+                            onClick={handleConnectBtn}
+                          >
+                            Connect with them
+                          </Button>
+                        </Flex>
                       </Flex>
                     </Flex>
                   ) : (
@@ -163,8 +211,8 @@ const Finder = () => {
               isPlaying={isPlaying}
               size={180}
               duration={8}
-              trailColor={"#ffffff"}
-              colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+              trailColor={"#000000"}
+              colors={["#ffffff", "#F7B801", "#A30000", "#A30000"]}
               colorsTime={[7, 5, 2, 0]}
               onComplete={() => timerComplete()}
             >
@@ -177,12 +225,12 @@ const Finder = () => {
               <Button
                 onClick={() => {
                   setIsPlaying(false);
-                  setFinding(false)
+                  setFinding(false);
                   setFoundUser(null);
                   setKey((prevKey) => prevKey + 1);
                 }}
               >
-                Stop and go back!
+                Stop and go back! 
               </Button>
             )}
           </VStack>

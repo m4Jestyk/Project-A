@@ -88,6 +88,7 @@ export default function ProfileUpdate() {
     }
   };
 
+
   return (
     <Container maxW={"90vw"}>
       <Header />
@@ -106,7 +107,7 @@ export default function ProfileUpdate() {
           p={{ base: 5, lg: 16 }}
         >
           {loading ? (
-            <PacmanLoader color="#ffffff" size={75} />
+            <PacmanLoader color="#FFFFFF" size={75} />
           ) : (
             <Box>
               <VStack spacing={{ base: 4, md: 8, lg: 20 }}>
@@ -307,6 +308,21 @@ export default function ProfileUpdate() {
 
                       <Button
                         colorScheme="blue"
+                        bg="green.400"
+                        color="white"
+                        _hover={{
+                          bg: "blue.500",
+                        }}
+                        width="full"
+                        onClick={
+                          ()=>navigate("/questionupdate")
+                        }
+                      >
+                        Change Questions
+                      </Button>
+
+                      <Button
+                        colorScheme="blue"
                         bg="blue.400"
                         color="white"
                         _hover={{
@@ -328,3 +344,7 @@ export default function ProfileUpdate() {
     </Container>
   );
 }
+
+
+
+

@@ -16,8 +16,8 @@ import {
 import { useState, useEffect } from "react";
 import { redirect, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import Header from "../components/Header";
 import Login from "../components/Login";
-
 
 const Blur = (props) => {
   return (
@@ -42,9 +42,9 @@ const Blur = (props) => {
 };
 
 export default function Signup() {
-    const [loading, setLoading] = useState(false);
-    const [cookies, removeCookie] = useCookies([]);
-    const [isLogin, setisLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [cookies, removeCookie] = useCookies([]);
+  const [isLogin, setisLogin] = useState(true);
 
   const [inputs, setInputs] = useState({
     username: "",
@@ -55,49 +55,47 @@ export default function Signup() {
   const navigate = useNavigate();
   console.log(cookies.cookiemonster);
 
-
-  useEffect(()=>{
-    const verifyCookie = async() => {
-        if(!cookies.cookiemonster){
-            navigate("/signup");
-        }
-        else{
-          navigate("/");
-        }
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.cookiemonster) {
+        navigate("/signup");
+      } else {
+        navigate("/");
+      }
     };
     verifyCookie();
-}, [cookies, navigate])
+  }, [cookies, navigate]);
 
-  const handleFormChange = async() => {
+  const handleFormChange = async () => {
     console.log(inputs);
     setLoading(true);
     try {
-        const res = await fetch("/api/v1/users/new", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(inputs),
-        });
+      const res = await fetch("/api/v1/users/new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
 
-        const data = await res.json();
-        console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-        if(data.success === true)
-          {
-            console.log("Redirecting")
-            navigate("/login");
-          }
-
+      if (data.success === true) {
+        console.log("Redirecting");
+        navigate("/login");
+      }
     } catch (error) {
-        console.log(error);
-    } finally{
-        setLoading(false);
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Box position={"relative"}>
+      <Header />
+
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
@@ -148,7 +146,12 @@ export default function Signup() {
               password {">"}:)
             </Text>
 
-            <Text onClick={ () => navigate("/login")} cursor={"pointer"} color={"green.500"} fontSize={{ base: "sm", sm: "md" }}>
+            <Text
+              onClick={() => navigate("/login")}
+              cursor={"pointer"}
+              color={"green.500"}
+              fontSize={{ base: "sm", sm: "md" }}
+            >
               already a member? click me!!
             </Text>
           </Stack>

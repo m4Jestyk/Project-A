@@ -19,11 +19,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { User } from "../../../Server/models/user";
-import { Spinner } from '@chakra-ui/react'
+import { Spinner } from "@chakra-ui/react";
 import Header from "../components/Header";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
-
 
 const Blur = (props) => {
   return (
@@ -49,7 +48,7 @@ const Blur = (props) => {
 
 export default function Login() {
   const [cookies, removeCookie] = useCookies([]);
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -59,74 +58,76 @@ export default function Login() {
 
   console.log(cookies.cookiemonster);
 
-  useEffect(()=>{
-    const verifyCookie = async() => {
-        if(!cookies.cookiemonster){
-            navigate("/login");
-        }
-        else{
-          navigate("/");
-        }
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.cookiemonster) {
+        navigate("/login");
+      } else {
+        navigate("/");
+      }
     };
     verifyCookie();
-}, [cookies, navigate])
+  }, [cookies, navigate]);
 
-  const handleFormChange = async() => {
+  const handleFormChange = async () => {
     setLoading(true);
     try {
-        const res = await fetch("/api/v1/users/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(inputs),
-        });
+      const res = await fetch("/api/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
 
-        const data = await res.json();
-        console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-        if(data.success === true)
-          {
+      if (data.success === true) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data._id,
+            email: data.email,
+            username: data.username,
+          })
+        );
 
-            localStorage.setItem('user', JSON.stringify({
-              id: data._id,
-              email: data.email,
-              username: data.username,
-            }));
-
-            
-            dispatch(setUser({
-              id: data._id,
-              email: data.email,
-              username: data.username,
-            }));    
-            navigate("/");
-            window.location.reload();
-          }
-
+        dispatch(
+          setUser({
+            id: data._id,
+            email: data.email,
+            username: data.username,
+          })
+        );
+        navigate("/");
+        window.location.reload();
+      }
     } catch (error) {
-        console.log(error);
-    } finally{
-        setLoading(false);
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getRandomUser = async() => {
+  const getRandomUser = async () => {
     const res = await fetch("/api/v1/users/random", {
       method: "POST",
       headers: {
-          "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-    })
+    });
 
     const userData = await res.json();
     console.log(userData);
-  }
+  };
 
   // getRandomUser();                   //LOOK INTO THIS
 
   return (
     <Box position={"relative"}>
+      <Header />
+
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
@@ -175,7 +176,12 @@ export default function Login() {
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
               ready to leap?
             </Text>
-            <Text onClick={ () => navigate("/signup")} cursor={"pointer"} color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
+            <Text
+              onClick={() => navigate("/signup")}
+              cursor={"pointer"}
+              color={"gray.500"}
+              fontSize={{ base: "sm", sm: "md" }}
+            >
               new here? click me!!
             </Text>
           </Stack>
@@ -214,7 +220,7 @@ export default function Login() {
                 }}
               />
             </Stack>
-            
+
             <Button
               fontFamily={"heading"}
               mt={8}

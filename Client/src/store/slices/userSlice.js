@@ -24,6 +24,7 @@ const userSlice = createSlice({
             state.id = null;
             state.email = '';
             state.username = '';
+            localStorage.removeItem('user');
         },
     }
 })

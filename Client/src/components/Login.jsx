@@ -19,8 +19,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { User } from "../../../Server/models/user";
-import { Spinner } from '@chakra-ui/react'
-
+import { Spinner } from "@chakra-ui/react";
 
 const Blur = (props) => {
   return (
@@ -46,7 +45,7 @@ const Blur = (props) => {
 
 export default function Login() {
   const [cookies, removeCookie] = useCookies([]);
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -55,47 +54,42 @@ export default function Login() {
 
   console.log(cookies.cookiemonster);
 
-  useEffect(()=>{
-    const verifyCookie = async() => {
-        if(!cookies.cookiemonster){
-            navigate("/login");
-        }
-        else{
-          navigate("/");
-        }
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.cookiemonster) {
+        navigate("/login");
+      } else {
+        navigate("/");
+      }
     };
     verifyCookie();
-}, [cookies, navigate])
+  }, [cookies, navigate]);
 
-  const handleFormChange = async() => {
+  const handleFormChange = async () => {
     console.log(inputs);
     setLoading(true);
     try {
-        const res = await fetch("/api/v1/users/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(inputs),
-        });
+      const res = await fetch("/api/v1/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
 
-        const data = await res.json();
-        console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-        if(data.success === true)
-          {
-            navigate("/");
-            window.location.reload();
-          }
-
+      if (data.success === true) {
+        navigate("/");
+        window.location.reload();
+      }
     } catch (error) {
-        console.log(error);
-    } finally{
-        setLoading(false);
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  
 
   return (
     <Box position={"relative"}>
@@ -147,7 +141,12 @@ export default function Login() {
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
               ready to leap?
             </Text>
-            <Text onClick={ () => navigate("/signup")} cursor={"pointer"} color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
+            <Text
+              onClick={() => navigate("/signup")}
+              cursor={"pointer"}
+              color={"gray.500"}
+              fontSize={{ base: "sm", sm: "md" }}
+            >
               new here? click me!!
             </Text>
           </Stack>
@@ -186,7 +185,7 @@ export default function Login() {
                 }}
               />
             </Stack>
-            
+
             <Button
               fontFamily={"heading"}
               mt={8}
