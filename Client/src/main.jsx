@@ -11,16 +11,19 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/SignUp.jsx";
 import { store } from './store/store.js'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import Finder from "./pages/Finder.jsx";
 import ProfileUpdate from "./pages/ProfileUpdate.jsx";
+import RequestsTab from "./pages/RequestsTab.jsx";
+import Messages from "./pages/Messages.jsx";
+import QuestionsUpdater from "./pages/QuestionsUpdater.jsx";
 
 
 const styles = {
   global: (props) => ({
     body: {
-      color: mode("#FFFFFF ", "#000000")(props),
-      bg: mode("#000000", "#E5E5E5")(props), // Black for light mode, Light gray for dark mode
+      color: mode("#FFFFFF", "#FFFFFF ")(props),
+      bg: mode("#000000", "#000000")(props), // Black for light mode, Light gray for dark mode
     },
   }),
 };
@@ -39,32 +42,53 @@ const colors = {
 
 const theme = extendTheme({ config, colors, styles });
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/signup",
-    // exact: true,
-    element: <Signup />,
-  },
-  {
-    path: "/login",
-    exact: true,
-    element: <Login />,
-  },
-  {
-    path: "/finder",
-    exact: true,
-    element: <Finder/>,
-  },
-  {
-    path: "/updateprofile",
-    exact: true,
-    element: <ProfileUpdate/>
-  }
-]);
+const AppRouter = () => {
+  const userState = useSelector((state) => state.user);
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: userState.id ? <Home /> : <Login/>,
+    },
+    {
+      path: "/signup",
+      element: userState.id ? <Home/> : <Signup />,
+    },
+    {
+      path: "/login",
+      exact: true,
+      element: userState.id ? <Home/> : <Login />,
+    },
+    {
+      path: "/finder",
+      exact: true,
+      element: userState.id ? <Finder/> : <Login/>,
+    },
+    {
+      path: "/questionupdate",
+      exact: true,
+      element: userState.id ? <QuestionsUpdater/> : <Login/>
+    },
+    {
+      path: "/updateprofile",
+      exact: true,
+      element: userState.id ? <ProfileUpdate/> : <Login/>
+    },
+    {
+      path: "/requests",
+      exact: true,
+      element: userState.id ? <RequestsTab/> : <Login/>
+    },
+    {
+      path: "/messages",
+      exact: true,
+      element: userState.id ? <Messages/> : <Login/>
+    },
+    
+  ]);
+
+  return <RouterProvider router={router} />;
+};
 
 const rootElement = document.getElementById("root");
 
@@ -73,8 +97,8 @@ ReactDOM.createRoot(rootElement).render(
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Provider store={store}>
-        <RouterProvider router={router} />
-        </Provider>    
-      </ChakraProvider>
+        <AppRouter />
+      </Provider>
+    </ChakraProvider>
   </React.StrictMode>
 );
